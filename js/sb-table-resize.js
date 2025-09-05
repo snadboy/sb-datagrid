@@ -12,6 +12,13 @@
         let clickTimer = null;
         let isResizing = false;
 
+        function updateHeaderPositions() {
+            headers.forEach(header => {
+                const rect = header.getBoundingClientRect();
+                header.setAttribute('data-x-position', Math.round(rect.left));
+            });
+        }
+
         headers.forEach((header, index) => {
             if (index < headers.length - 1) {
                 const resizer = document.createElement('div');
@@ -28,7 +35,6 @@
                     startWidth = header.offsetWidth;
                     totalTableWidth = table.offsetWidth;
 
-                    // This is the fix: Lock the current widths of all headers in pixels
                     headers.forEach(h => {
                         h.style.width = `${h.offsetWidth}px`;
                     });
@@ -48,6 +54,7 @@
                         header.style.width = `${newColWidth}px`;
                         const newTableWidth = totalTableWidth + deltaX;
                         table.style.width = `${newTableWidth}px`;
+                        updateHeaderPositions(); // Update positions during drag
                     }
                 };
 
@@ -66,6 +73,7 @@
                     clearTimeout(clickTimer);
                     clickTimer = null;
                     autoSizeColumn(index);
+                    updateHeaderPositions(); // Update positions after autosize
                 } else {
                     clickTimer = setTimeout(() => {
                         const sortDirection = header.getAttribute('data-sort-dir') === 'asc' ? 'desc' : 'asc';
@@ -78,6 +86,18 @@
                         clickTimer = null;
                     }, 250);
                 }
+            });
+
+            // Add mouseenter listener to show x-position
+            header.addEventListener('mouseenter', () => {
+                const xPos = header.getAttribute('data-x-position');
+                if (xPos) {
+                    header.title = `X-Position: ${xPos}px`;
+                }
+            });
+
+            header.addEventListener('mouseleave', () => {
+                header.title = '';
             });
         });
 
@@ -136,4 +156,15 @@
     }
 
     window.initializeResizableTable = initializeTable;
+
+    // Initial call to set positions on page load
+    const myTable = document.getElementById('myTable');
+    if (myTable) {
+        initializeResizableTable(myTable);
+        myTable.querySelectorAll('th').forEach(header => {
+            const rect = header.getBoundingClientRect();
+            header.setAttribute('data-x-position', Math.round(rect.left));
+        });
+    }
+
 })();
