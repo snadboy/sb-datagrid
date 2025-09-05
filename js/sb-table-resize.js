@@ -1,5 +1,3 @@
-// File: resizable-sortable-table.js
-
 (function () {
     /**
      * Initializes a table with resizing and sorting functionality.
@@ -14,7 +12,6 @@
         const headers = table.querySelectorAll('th');
         const tbody = table.querySelector('tbody');
 
-        // Add event listeners and resizers to headers
         headers.forEach((header, index) => {
             // --- Resizing functionality ---
             if (index < headers.length - 1) {
@@ -32,8 +29,7 @@
                     startX = e.clientX;
                     startWidth = header.offsetWidth;
                     totalTableWidth = table.offsetWidth;
-                    table.style.width = `${totalTableWidth}px`; // Fix the table width to prevent layout shifts
-                    
+
                     document.addEventListener('mousemove', onMouseMove);
                     document.addEventListener('mouseup', onMouseUp);
                     document.body.style.cursor = 'col-resize';
@@ -42,21 +38,13 @@
 
                 const onMouseMove = (e) => {
                     if (!isResizing) return;
-                    const deltaX = 0;  //e.clientX - startX;
+                    const deltaX = e.clientX - startX;
                     const newColWidth = startWidth + deltaX;
 
-                    if (newColWidth > 5) {
-                        console.log('- -- --- ---- ----- ---- --- -- -');
-                        console.log('delataX: ', deltaX);
-                        console.log('A startX: ', startX, 'e.clientX: ', e.clientX);
-                        console.log('Resizing column to:', newColWidth, ' -- ', 'Table width from: ', totalTableWidth, ' to: ', totalTableWidth + deltaX);
-                        const newTableWidth = totalTableWidth + deltaX;
-                        console.log('A table.style.width: ', table.style.width);
-                        table.style.width = `${newTableWidth}px`;
-                        console.log('B table.style.width: ', table.style.width);
-                        console.log('B startX: ', startX, 'e.clientX: ', e.clientX);
+                    if (newColWidth > 50) {
                         header.style.width = `${newColWidth}px`;
-                        console.log('C startX: ', startX, 'e.clientX: ', e.clientX);
+                        const newTableWidth = totalTableWidth + deltaX;
+                        table.style.width = `${newTableWidth}px`;
                     }
                 };
 
@@ -106,7 +94,6 @@
         }
     }
 
-    // Public API: Expose the function to the global scope
-    window.sbTableResize = initializeTable;
+    window.initializeResizableTable = initializeTable;
 
 })();

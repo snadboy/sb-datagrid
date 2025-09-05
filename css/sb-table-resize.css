@@ -23,12 +23,8 @@ td {
     padding: 12px 15px;
     border: 1px solid #ddd;
     text-align: left;
-    /* Removed: white-space: nowrap; */
-    /* Removed: text-overflow: ellipsis; */
     overflow: hidden;
-    /* This is still useful to hide overflowing content */
     word-wrap: break-word;
-    /* Allows long words to break and wrap */
 }
 
 th {
@@ -38,7 +34,6 @@ th {
     cursor: pointer;
 }
 
-/* Add a hover effect for sorting */
 th:hover {
     background-color: #0056b3;
 }
