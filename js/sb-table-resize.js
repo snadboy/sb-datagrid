@@ -32,7 +32,8 @@
                     startX = e.clientX;
                     startWidth = header.offsetWidth;
                     totalTableWidth = table.offsetWidth;
-
+                    table.style.width = `${totalTableWidth}px`; // Fix the table width to prevent layout shifts
+                    
                     document.addEventListener('mousemove', onMouseMove);
                     document.addEventListener('mouseup', onMouseUp);
                     document.body.style.cursor = 'col-resize';
