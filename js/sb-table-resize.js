@@ -1,8 +1,4 @@
 (function () {
-    /**
-     * Initializes a table with resizing, sorting, and auto-sizing functionality.
-     * @param {HTMLTableElement} table The table element to be enhanced.
-     */
     function initializeTable(table) {
         if (!table) {
             console.error('Table element not found.');
@@ -13,22 +9,8 @@
         const tbody = table.querySelector('tbody');
         const tableContainer = table.parentElement;
 
-        const fixedScrollbar = document.querySelector('.fixed-scrollbar');
-        const fixedScrollbarInner = document.querySelector('.fixed-scrollbar-inner');
-
         let clickTimer = null;
         let isResizing = false;
-
-        function updateScrollbarWidth() {
-            fixedScrollbarInner.style.width = `${table.offsetWidth}px`;
-        }
-
-        fixedScrollbar.addEventListener('scroll', () => {
-            tableContainer.scrollLeft = fixedScrollbar.scrollLeft;
-        });
-
-        window.addEventListener('resize', updateScrollbarWidth);
-        updateScrollbarWidth();
 
         headers.forEach((header, index) => {
             if (index < headers.length - 1) {
@@ -69,22 +51,17 @@
                     document.removeEventListener('mousemove', onMouseMove);
                     document.removeEventListener('mouseup', onMouseUp);
                     document.body.style.cursor = '';
-                    updateScrollbarWidth();
                 };
             }
 
-            // --- Sorting and Auto-sizing functionality ---
             header.addEventListener('click', () => {
-                if (isResizing) return; // Prevent sorting when resizing is active
+                if (isResizing) return;
 
                 if (clickTimer) {
-                    // This is a double-click, clear the timer and run autosize
                     clearTimeout(clickTimer);
                     clickTimer = null;
                     autoSizeColumn(index);
-                    updateScrollbarWidth();
                 } else {
-                    // This is a single-click, set a timer to wait for a potential double-click
                     clickTimer = setTimeout(() => {
                         const sortDirection = header.getAttribute('data-sort-dir') === 'asc' ? 'desc' : 'asc';
 
@@ -94,7 +71,7 @@
 
                         sortTable(index, sortDirection);
                         clickTimer = null;
-                    }, 250); // Adjust this value to change the double-click speed
+                    }, 250);
                 }
             });
         });
@@ -155,103 +132,3 @@
 
     window.initializeResizableTable = initializeTable;
 })();
-
-// (function () {
-//     /**
-//      * Initializes a table with resizing and sorting functionality.
-//      * @param {HTMLTableElement} table The table element to be enhanced.
-//      */
-//     function initializeTable(table) {
-//         if (!table) {
-//             console.error('Table element not found.');
-//             return;
-//         }
-
-//         const headers = table.querySelectorAll('th');
-//         const tbody = table.querySelector('tbody');
-
-//         headers.forEach((header, index) => {
-//             // --- Resizing functionality ---
-//             if (index < headers.length - 1) {
-//                 const resizer = document.createElement('div');
-//                 resizer.className = 'resizer';
-//                 header.appendChild(resizer);
-
-//                 let isResizing = false;
-//                 let startX;
-//                 let startWidth;
-//                 let totalTableWidth;
-
-//                 resizer.addEventListener('mousedown', (e) => {
-//                     isResizing = true;
-//                     startX = e.clientX;
-//                     startWidth = header.offsetWidth;
-//                     totalTableWidth = table.offsetWidth;
-
-//                     document.addEventListener('mousemove', onMouseMove);
-//                     document.addEventListener('mouseup', onMouseUp);
-//                     document.body.style.cursor = 'col-resize';
-//                     e.stopPropagation();
-//                 });
-
-//                 const onMouseMove = (e) => {
-//                     if (!isResizing) return;
-//                     const deltaX = e.clientX - startX;
-//                     const newColWidth = startWidth + deltaX;
-
-//                     if (newColWidth > 50) {
-//                         header.style.width = `${newColWidth}px`;
-//                         const newTableWidth = totalTableWidth + deltaX;
-//                         table.style.width = `${newTableWidth}px`;
-//                     }
-//                 };
-
-//                 const onMouseUp = () => {
-//                     isResizing = false;
-//                     document.removeEventListener('mousemove', onMouseMove);
-//                     document.removeEventListener('mouseup', onMouseUp);
-//                     document.body.style.cursor = '';
-//                 };
-//             }
-
-//             // --- Sorting functionality ---
-//             header.addEventListener('click', () => {
-//                 const sortDirection = header.getAttribute('data-sort-dir') === 'asc' ? 'desc' : 'asc';
-
-//                 headers.forEach(h => h.removeAttribute('data-sort-dir'));
-
-//                 header.setAttribute('data-sort-dir', sortDirection);
-
-//                 sortTable(index, sortDirection);
-//             });
-//         });
-
-//         /**
-//          * Sorts the table by a specific column.
-//          * @param {number} colIndex The index of the column to sort by.
-//          * @param {string} direction The sorting direction ('asc' or 'desc').
-//          */
-//         function sortTable(colIndex, direction) {
-//             const rows = Array.from(tbody.querySelectorAll('tr'));
-
-//             rows.sort((rowA, rowB) => {
-//                 const cellA = rowA.cells[colIndex].textContent.trim();
-//                 const cellB = rowB.cells[colIndex].textContent.trim();
-
-//                 let comparison = 0;
-//                 if (cellA > cellB) {
-//                     comparison = 1;
-//                 } else if (cellA < cellB) {
-//                     comparison = -1;
-//                 }
-
-//                 return direction === 'asc' ? comparison : comparison * -1;
-//             });
-
-//             rows.forEach(row => tbody.appendChild(row));
-//         }
-//     }
-
-//     window.initializeResizableTable = initializeTable;
-
-// })();
