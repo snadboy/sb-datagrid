@@ -113,24 +113,23 @@
 
             document.body.removeChild(tempDiv);
 
-            // Add padding for better visual spacing
-            const finalWidth = maxWidth + 30; // 30px for padding
-
+            const finalWidth = maxWidth + 30;
             const maxAllowedWidth = tableContainer.offsetWidth / 2;
-
             const newWidth = Math.min(finalWidth, maxAllowedWidth);
 
             headers[colIndex].style.width = `${newWidth}px`;
 
-            // Re-adjust total table width to prevent push/pull issues
-            const totalWidth = Array.from(headers).reduce((sum, h) => sum + h.offsetWidth, 0);
+            // Correctly update the total table width to allow for overflow
+            let totalWidth = 0;
+            headers.forEach(h => {
+                totalWidth += h.offsetWidth;
+            });
             table.style.width = `${totalWidth}px`;
         }
     }
 
     window.initializeResizableTable = initializeTable;
 })();
-
 
 
 // (function () {
