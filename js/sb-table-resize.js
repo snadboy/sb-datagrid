@@ -41,10 +41,10 @@
 
                 const onMouseMove = (e) => {
                     if (!isResizing) return;
-                    const deltaX = 1;  //e.clientX - startX;
+                    const deltaX = 0;  //e.clientX - startX;
                     const newColWidth = startWidth + deltaX;
 
-                    if (newColWidth > 50) {
+                    if (newColWidth > 5) {
                         console.log('delataX: ', deltaX);   
                         console.log('A startX: ', startX, 'e.clientX: ', e.clientX);
                         console.log('Resizing column to:', newColWidth, ' -- ', 'Table width from: ', totalTableWidth, ' to: ', totalTableWidth + deltaX);
