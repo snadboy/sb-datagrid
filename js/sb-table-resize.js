@@ -45,6 +45,7 @@
                     const newColWidth = startWidth + deltaX;
 
                     if (newColWidth > 50) {
+                        console.log('Resizing column to:', newColWidth, ' -- ', 'Table width to:', totalTableWidth + deltaX);
                         const newTableWidth = totalTableWidth + deltaX;
                         table.style.width = `${newTableWidth}px`;
                         header.style.width = `${newColWidth}px`;
