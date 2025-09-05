@@ -45,9 +45,9 @@
                     const newColWidth = startWidth + deltaX;
 
                     if (newColWidth > 50) {
-                        header.style.width = `${newColWidth}px`;
                         const newTableWidth = totalTableWidth + deltaX;
                         table.style.width = `${newTableWidth}px`;
+                        header.style.width = `${newColWidth}px`;
                     }
                 };
 
