@@ -45,11 +45,14 @@
                     const newColWidth = startWidth + deltaX;
 
                     if (newColWidth > 5) {
-                        console.log('delataX: ', deltaX);   
+                        console.log('- -- --- ---- ----- ---- --- -- -');
+                        console.log('delataX: ', deltaX);
                         console.log('A startX: ', startX, 'e.clientX: ', e.clientX);
                         console.log('Resizing column to:', newColWidth, ' -- ', 'Table width from: ', totalTableWidth, ' to: ', totalTableWidth + deltaX);
                         const newTableWidth = totalTableWidth + deltaX;
+                        console.log('A table.style.width: ', table.style.width);
                         table.style.width = `${newTableWidth}px`;
+                        console.log('B table.style.width: ', table.style.width);
                         console.log('B startX: ', startX, 'e.clientX: ', e.clientX);
                         header.style.width = `${newColWidth}px`;
                         console.log('C startX: ', startX, 'e.clientX: ', e.clientX);
