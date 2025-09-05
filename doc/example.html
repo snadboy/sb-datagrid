@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resizable and Sortable Table</title>
+    <link rel="stylesheet" href="https://snadboy.github.io/sb-table-resize/css/sb-table-resize.css">
+
+</head>
+
+<body>
+
+    <div class="table-container">
+        <table id="myTable">
+            <thead>
+                <tr>
+                    <th>Column 1</th>
+                    <th>Column 2</th>
+                    <th>Column 3</th>
+                    <th>Column 4</th>
+                    <th>Column 5</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Lorem ipsum ...</td>
+                    <td>Pellentesque...</td>
+                    <td>Vestibulum...</td>
+                    <td>Vivamus...</td>
+                    <td>Aliquam...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://snadboy.github.io/sb-table-resize/js/sb-table-resize.js"></script>
+    <script>
+        // Find the table and initialize it
+        const myTable = document.getElementById('myTable');
+        sbTableResize(myTable);
+    </script>
+</body>
+
+</html>
