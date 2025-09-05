@@ -30,6 +30,8 @@
                 let totalTableWidth;
 
                 resizer.addEventListener('mousedown', (e) => {
+                    console.log('Mouse Down - Target: ', e.target);
+
                     isResizing = true;
                     startX = e.clientX;
                     startWidth = header.offsetWidth;
@@ -46,8 +48,8 @@
                 });
 
                 const onMouseMove = (e) => {
-                    console.log('Target: ', e.target);
-                    
+                    console.log('Mouse Move - Target: ', e.target);
+
                     if (!isResizing) return;
                     const deltaX = e.clientX - startX;
                     const newColWidth = startWidth + deltaX;
