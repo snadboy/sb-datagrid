@@ -13,14 +13,29 @@
         const tbody = table.querySelector('tbody');
         const tableContainer = table.parentElement;
 
+        const fixedScrollbar = document.querySelector('.fixed-scrollbar');
+        const fixedScrollbarInner = document.querySelector('.fixed-scrollbar-inner');
+
+        let clickTimer = null;
+        let isResizing = false;
+
+        function updateScrollbarWidth() {
+            fixedScrollbarInner.style.width = `${table.offsetWidth}px`;
+        }
+
+        fixedScrollbar.addEventListener('scroll', () => {
+            tableContainer.scrollLeft = fixedScrollbar.scrollLeft;
+        });
+
+        window.addEventListener('resize', updateScrollbarWidth);
+        updateScrollbarWidth();
+
         headers.forEach((header, index) => {
-            // --- Resizing functionality ---
             if (index < headers.length - 1) {
                 const resizer = document.createElement('div');
                 resizer.className = 'resizer';
                 header.appendChild(resizer);
 
-                let isResizing = false;
                 let startX;
                 let startWidth;
                 let totalTableWidth;
@@ -54,22 +69,33 @@
                     document.removeEventListener('mousemove', onMouseMove);
                     document.removeEventListener('mouseup', onMouseUp);
                     document.body.style.cursor = '';
+                    updateScrollbarWidth();
                 };
             }
 
             // --- Sorting and Auto-sizing functionality ---
             header.addEventListener('click', () => {
-                const sortDirection = header.getAttribute('data-sort-dir') === 'asc' ? 'desc' : 'asc';
+                if (isResizing) return; // Prevent sorting when resizing is active
 
-                headers.forEach(h => h.removeAttribute('data-sort-dir'));
+                if (clickTimer) {
+                    // This is a double-click, clear the timer and run autosize
+                    clearTimeout(clickTimer);
+                    clickTimer = null;
+                    autoSizeColumn(index);
+                    updateScrollbarWidth();
+                } else {
+                    // This is a single-click, set a timer to wait for a potential double-click
+                    clickTimer = setTimeout(() => {
+                        const sortDirection = header.getAttribute('data-sort-dir') === 'asc' ? 'desc' : 'asc';
 
-                header.setAttribute('data-sort-dir', sortDirection);
+                        headers.forEach(h => h.removeAttribute('data-sort-dir'));
 
-                sortTable(index, sortDirection);
-            });
+                        header.setAttribute('data-sort-dir', sortDirection);
 
-            header.addEventListener('dblclick', () => {
-                autoSizeColumn(index);
+                        sortTable(index, sortDirection);
+                        clickTimer = null;
+                    }, 250); // Adjust this value to change the double-click speed
+                }
             });
         });
 
@@ -119,7 +145,6 @@
 
             headers[colIndex].style.width = `${newWidth}px`;
 
-            // Correctly update the total table width to allow for overflow
             let totalWidth = 0;
             headers.forEach(h => {
                 totalWidth += h.offsetWidth;
@@ -130,7 +155,6 @@
 
     window.initializeResizableTable = initializeTable;
 })();
-
 
 // (function () {
 //     /**
