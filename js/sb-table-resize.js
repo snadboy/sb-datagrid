@@ -20,7 +20,11 @@
         }
 
         headers.forEach((header, index) => {
+            console.log('Header index: ', index);
+            
             if (index < headers.length - 1) {
+                console.log('Adding resizer to header index: ', index);
+
                 const resizer = document.createElement('div');
                 resizer.className = 'resizer';
                 header.appendChild(resizer);
