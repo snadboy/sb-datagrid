@@ -46,6 +46,8 @@
                 });
 
                 const onMouseMove = (e) => {
+                    console.log('Target: ', e.target);
+                    
                     if (!isResizing) return;
                     const deltaX = e.clientX - startX;
                     const newColWidth = startWidth + deltaX;
