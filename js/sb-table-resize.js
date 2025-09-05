@@ -28,6 +28,11 @@
                     startWidth = header.offsetWidth;
                     totalTableWidth = table.offsetWidth;
 
+                    // This is the fix: Lock the current widths of all headers in pixels
+                    headers.forEach(h => {
+                        h.style.width = `${h.offsetWidth}px`;
+                    });
+
                     document.addEventListener('mousemove', onMouseMove);
                     document.addEventListener('mouseup', onMouseUp);
                     document.body.style.cursor = 'col-resize';
