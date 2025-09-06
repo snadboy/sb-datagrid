@@ -1,9 +1,11 @@
 (function () {
     function initializeTable(table) {
-        if (!table) {
-            console.error('Table element not found.');
+        if (!table || table.getAttribute('data-initialized')) {
+            console.error('Table element not found or already initialized.');
             return;
         }
+
+        table.setAttribute('data-initialized', 'true');
 
         const headers = table.querySelectorAll('th');
         const tbody = table.querySelector('tbody');
@@ -13,27 +15,20 @@
         let isResizing = false;
 
         headers.forEach((header, index) => {
-            if (index < headers.length - 1) {
+            if (index < headers.length - 1 && !header.querySelector('.resizer')) {
                 const resizer = document.createElement('div');
                 resizer.className = 'resizer';
                 header.appendChild(resizer);
 
                 let startX;
-                let startWidths;
+                let startWidth;
                 let totalTableWidth;
 
                 resizer.addEventListener('mousedown', (e) => {
                     isResizing = true;
                     startX = e.clientX;
+                    startWidth = header.offsetWidth;
                     totalTableWidth = table.offsetWidth;
-
-                    // Read all widths first to avoid layout thrashing
-                    startWidths = Array.from(headers).map(h => h.offsetWidth);
-
-                    // Then, apply the initial widths to lock the layout
-                    headers.forEach((h, i) => {
-                        h.style.width = `${startWidths[i]}px`;
-                    });
 
                     document.addEventListener('mousemove', onMouseMove);
                     document.addEventListener('mouseup', onMouseUp);
@@ -44,7 +39,7 @@
                 const onMouseMove = (e) => {
                     if (!isResizing) return;
                     const deltaX = e.clientX - startX;
-                    const newColWidth = startWidths[index] + deltaX;
+                    const newColWidth = startWidth + deltaX;
 
                     if (newColWidth > 50) {
                         header.style.width = `${newColWidth}px`;
