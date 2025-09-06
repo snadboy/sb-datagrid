@@ -171,13 +171,13 @@
     window.initializeResizableTable = initializeTable;
 
     // Initial call to set positions on page load
-    const myTable = document.getElementById('myTable');
-    if (myTable) {
-        initializeResizableTable(myTable);
-        myTable.querySelectorAll('th').forEach(header => {
-            const rect = header.getBoundingClientRect();
-            header.setAttribute('data-x-position', Math.round(rect.left));
-        });
-    }
+    // const myTable = document.getElementById('myTable');
+    // if (myTable) {
+    //     initializeResizableTable(myTable);
+    //     myTable.querySelectorAll('th').forEach(header => {
+    //         const rect = header.getBoundingClientRect();
+    //         header.setAttribute('data-x-position', Math.round(rect.left));
+    //     });
+    // }
 
 })();
