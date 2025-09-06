@@ -1,5 +1,10 @@
 (function () {
+    let initCnt = 1;
+
     function initializeTable(table) {
+        console.log('Initializing table, count: ', ++initCnt);
+        console.trace();
+
         if (!table) {
             console.error('Table element not found.');
             return;
