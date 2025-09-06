@@ -44,7 +44,8 @@ th:hover {
     right: 0;
     width: 10px;
     height: 100%;
-    background: transparent;
+    /* background: transparent; */
+    background-color: red;
     cursor: col-resize;
     user-select: none;
     z-index: 1;
