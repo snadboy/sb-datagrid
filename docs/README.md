@@ -22,10 +22,10 @@ A lightweight, customizable, and feature-rich JavaScript data grid component wit
 
 ```html
 <!-- CSS -->
-<link rel="stylesheet" href="https://snadboy.github.io/sb-datagrid/datagrid.css">
+<link rel="stylesheet" href="https://snadboy.github.io/sb-datagrid/css/datagrid.css">
 
 <!-- JavaScript -->
-<script src="https://snadboy.github.io/sb-datagrid/datagrid.js"></script>
+<script src="https://snadboy.github.io/sb-datagrid/js/datagrid.js"></script>
 ```
 
 ### Basic Usage
@@ -138,9 +138,10 @@ new DataGrid('#grid', { theme: 'dark compact', ... });
 
 ## 📦 Files
 
-- `datagrid.js` - Main JavaScript library
-- `datagrid.css` - Stylesheet with themes
-- `index.html` - Live demo and documentation
+- `js/datagrid.js` - Main JavaScript library
+- `css/datagrid.css` - Stylesheet with themes  
+- `docs/index.html` - Live demo and documentation
+- `docs/README.md` - This documentation
 
 ## 📄 License
 
