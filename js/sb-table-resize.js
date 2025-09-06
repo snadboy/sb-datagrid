@@ -1,10 +1,5 @@
 (function () {
-    let initCnt = 0;
-
     function initializeTable(table) {
-        console.log('Initializing table, count: ', ++initCnt);
-        console.trace();
-
         if (!table) {
             console.error('Table element not found.');
             return;
@@ -17,37 +12,27 @@
         let clickTimer = null;
         let isResizing = false;
 
-        function updateHeaderPositions() {
-            headers.forEach(header => {
-                const rect = header.getBoundingClientRect();
-                header.setAttribute('data-x-position', Math.round(rect.left));
-            });
-        }
-
         headers.forEach((header, index) => {
-            console.log('Header index: ', index);
-            
             if (index < headers.length - 1) {
-                console.log('Adding resizer to header index: ', index);
-
                 const resizer = document.createElement('div');
                 resizer.className = 'resizer';
                 header.appendChild(resizer);
 
                 let startX;
-                let startWidth;
+                let startWidths;
                 let totalTableWidth;
 
                 resizer.addEventListener('mousedown', (e) => {
-                    console.log('Mouse Down - Target: ', e.target);
-
                     isResizing = true;
                     startX = e.clientX;
-                    startWidth = header.offsetWidth;
                     totalTableWidth = table.offsetWidth;
 
-                    headers.forEach(h => {
-                        h.style.width = `${h.offsetWidth}px`;
+                    // Read all widths first to avoid layout thrashing
+                    startWidths = Array.from(headers).map(h => h.offsetWidth);
+
+                    // Then, apply the initial widths to lock the layout
+                    headers.forEach((h, i) => {
+                        h.style.width = `${startWidths[i]}px`;
                     });
 
                     document.addEventListener('mousemove', onMouseMove);
@@ -57,17 +42,14 @@
                 });
 
                 const onMouseMove = (e) => {
-                    console.log('Mouse Move - Target: ', e.target);
-
                     if (!isResizing) return;
                     const deltaX = e.clientX - startX;
-                    const newColWidth = startWidth + deltaX;
+                    const newColWidth = startWidths[index] + deltaX;
 
                     if (newColWidth > 50) {
                         header.style.width = `${newColWidth}px`;
                         const newTableWidth = totalTableWidth + deltaX;
                         table.style.width = `${newTableWidth}px`;
-                        updateHeaderPositions(); // Update positions during drag
                     }
                 };
 
@@ -86,7 +68,6 @@
                     clearTimeout(clickTimer);
                     clickTimer = null;
                     autoSizeColumn(index);
-                    updateHeaderPositions(); // Update positions after autosize
                 } else {
                     clickTimer = setTimeout(() => {
                         const sortDirection = header.getAttribute('data-sort-dir') === 'asc' ? 'desc' : 'asc';
@@ -99,18 +80,6 @@
                         clickTimer = null;
                     }, 250);
                 }
-            });
-
-            // Add mouseenter listener to show x-position
-            header.addEventListener('mouseenter', () => {
-                const xPos = header.getAttribute('data-x-position');
-                if (xPos) {
-                    header.title = `X-Position: ${xPos}px`;
-                }
-            });
-
-            header.addEventListener('mouseleave', () => {
-                header.title = '';
             });
         });
 
@@ -170,14 +139,8 @@
 
     window.initializeResizableTable = initializeTable;
 
-    // Initial call to set positions on page load
-    // const myTable = document.getElementById('myTable');
-    // if (myTable) {
-    //     initializeResizableTable(myTable);
-    //     myTable.querySelectorAll('th').forEach(header => {
-    //         const rect = header.getBoundingClientRect();
-    //         header.setAttribute('data-x-position', Math.round(rect.left));
-    //     });
-    // }
-
+    document.addEventListener('DOMContentLoaded', () => {
+        const myTable = document.getElementById('myTable');
+        initializeResizableTable(myTable);
+    });
 })();
