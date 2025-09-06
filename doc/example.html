@@ -4,87 +4,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resizable and Sortable Table</title>
+    <title>DIV Data Grid</title>
     <link rel="stylesheet" href="../css/sb-table-resize.css">
 </head>
 
 <body>
 
-    <div class="table-container">
-        <table id="myTable">
-            <thead>
-                <tr>
-                    <th>Column 1</th>
-                    <th>Column 2</th>
-                    <th>Column 3</th>
-                    <th>Column 4</th>
-                    <th>Column 5</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
-                    <td>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-                    </td>
-                    <td>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Proin
-                        vel ante.</td>
-                    <td>Vivamus non nunc quis libero hendrerit cursus. Donec vehicula, magna non scelerisque lacinia.
-                    </td>
-                    <td>Aliquam erat volutpat. Ut consequat lectus sed libero imperdiet, a iaculis ipsum euismod.</td>
-                </tr>
-                <tr>
-                    <td>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                        pariatur.</td>
-                    <td>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
-                        id est laborum.</td>
-                    <td>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
-                        laudantium.</td>
-                    <td>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-                        consequuntur magni dolores.</td>
-                    <td>quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi
-                        consequatur.</td>
-                </tr>
-                <tr>
-                    <td>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum
-                        deleniti.</td>
-                    <td>Molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia
-                        deserunt mollitia animi.</td>
-                    <td>Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis
-                        est eligendi.</td>
-                    <td>Omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut
-                        officiis.</td>
-                    <td>Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores
-                        alias.</td>
-                </tr>
-                <tr>
-                    <td>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.
-                    </td>
-                    <td>Sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat.</td>
-                    <td>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi
-                        ut aliquid.</td>
-                    <td>Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae.</td>
-                    <td>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium
-                        voluptatum.</td>
-                </tr>
-                <tr>
-                    <td>Harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est.
-                    </td>
-                    <td>Cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat.</td>
-                    <td>Omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut
-                        officiis.</td>
-                    <td>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum
-                        deleniti.</td>
-                    <td>Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis.
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="grid-container">
+        <div class="grid-header">
+            <div class="grid-row header-row">
+                <div class="grid-cell">Column 1</div>
+                <div class="grid-cell">Column 2</div>
+                <div class="grid-cell">Column 3</div>
+                <div class="grid-cell">Column 4</div>
+                <div class="grid-cell">Column 5</div>
+            </div>
+        </div>
+        <div class="grid-body">
+            <div class="grid-row">
+                <div class="grid-cell">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                <div class="grid-cell">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
+                    turpis egestas.</div>
+                <div class="grid-cell">Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia
+                    Curae; Proin vel ante.</div>
+                <div class="grid-cell">Vivamus non nunc quis libero hendrerit cursus. Donec vehicula, magna non
+                    scelerisque lacinia.</div>
+                <div class="grid-cell">Aliquam erat volutpat. Ut consequat lectus sed libero imperdiet, a iaculis ipsum
+                    euismod.</div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                    fugiat nulla pariatur.</div>
+                <div class="grid-cell">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                    deserunt mollit anim id est laborum.</div>
+                <div class="grid-cell">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
+                    doloremque laudantium.</div>
+                <div class="grid-cell">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed
+                    quia consequuntur magni dolores.</div>
+                <div class="grid-cell">quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid
+                    ex ea commodi consequatur.</div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
+                    praesentium voluptatum deleniti.</div>
+                <div class="grid-cell">Molestias excepturi sint occaecati cupiditate non provident, similique sunt in
+                    culpa qui officia deserunt mollitia animi.</div>
+                <div class="grid-cell">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum
+                    soluta nobis est eligendi.</div>
+                <div class="grid-cell">Omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam
+                    et aut officiis.</div>
+                <div class="grid-cell">Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis
+                    voluptatibus maiores alias.</div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
+                    adipisci velit.</div>
+                <div class="grid-cell">Sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+                    aliquam quaerat.</div>
+                <div class="grid-cell">Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit
+                    laboriosam, nisi ut aliquid.</div>
+                <div class="grid-cell">Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil
+                    molestiae.</div>
+                <div class="grid-cell">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
+                    praesentium voluptatum.</div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell">Harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum
+                    soluta nobis est.</div>
+                <div class="grid-cell">Cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
+                    placeat.</div>
+                <div class="grid-cell">Omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam
+                    et aut officiis.</div>
+                <div class="grid-cell">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
+                    praesentium voluptatum deleniti.</div>
+                <div class="grid-cell">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum
+                    soluta nobis.</div>
+            </div>
+        </div>
     </div>
 
     <script src="../js/sb-table-resize.js"></script>
     <script>
-        const myTable = document.getElementById('myTable');
-        initializeResizableTable(myTable);
+        const myGrid = document.querySelector('.grid-container');
+        initializeDataGrid(myGrid);
     </script>
 </body>
 

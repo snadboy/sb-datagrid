@@ -1,50 +1,61 @@
 (function () {
-    function initializeTable(table) {
-        if (!table || table.getAttribute('data-initialized')) {
-            console.error('Table element not found or already initialized.');
+    /**
+     * Initializes a div-based data grid with resizing, sorting, and auto-sizing.
+     * @param {HTMLElement} grid The grid container element to be enhanced.
+     */
+    function initializeDataGrid(grid) {
+        if (!grid || grid.getAttribute('data-initialized')) {
+            console.error('Grid container not found or already initialized.');
             return;
         }
+        grid.setAttribute('data-initialized', 'true');
 
-        table.setAttribute('data-initialized', 'true');
-
-        const headers = table.querySelectorAll('th');
-        const tbody = table.querySelector('tbody');
-        const tableContainer = table.parentElement;
+        const headerCells = grid.querySelectorAll('.header-row .grid-cell');
+        const bodyRows = grid.querySelectorAll('.grid-body .grid-row');
+        const gridBody = grid.querySelector('.grid-body');
 
         let clickTimer = null;
         let isResizing = false;
 
-        headers.forEach((header, index) => {
-            if (index < headers.length - 1 && !header.querySelector('.resizer')) {
+        headerCells.forEach((headerCell, index) => {
+            // --- Resizing functionality ---
+            if (index < headerCells.length - 1) {
                 const resizer = document.createElement('div');
                 resizer.className = 'resizer';
-                header.appendChild(resizer);
+                headerCell.appendChild(resizer);
 
                 let startX;
                 let startWidth;
-                let totalTableWidth;
+                let gridWidth;
 
                 resizer.addEventListener('mousedown', (e) => {
                     isResizing = true;
                     startX = e.clientX;
-                    startWidth = header.offsetWidth;
-                    totalTableWidth = table.offsetWidth;
+                    startWidth = headerCell.offsetWidth;
+                    gridWidth = grid.offsetWidth;
+                    e.stopPropagation();
 
                     document.addEventListener('mousemove', onMouseMove);
                     document.addEventListener('mouseup', onMouseUp);
                     document.body.style.cursor = 'col-resize';
-                    e.stopPropagation();
                 });
 
                 const onMouseMove = (e) => {
                     if (!isResizing) return;
                     const deltaX = e.clientX - startX;
-                    const newColWidth = startWidth + deltaX;
+                    const newCellWidth = startWidth + deltaX;
 
-                    if (newColWidth > 50) {
-                        header.style.width = `${newColWidth}px`;
-                        const newTableWidth = totalTableWidth + deltaX;
-                        table.style.width = `${newTableWidth}px`;
+                    if (newCellWidth > 50) {
+                        headerCell.style.width = `${newCellWidth}px`;
+
+                        // Update the width of the corresponding cells in all body rows
+                        bodyRows.forEach(row => {
+                            row.children[index].style.width = `${newCellWidth}px`;
+                        });
+
+                        // Update total grid width
+                        const newGridWidth = gridWidth + deltaX;
+                        grid.style.width = `${newGridWidth}px`;
                     }
                 };
 
@@ -56,7 +67,8 @@
                 };
             }
 
-            header.addEventListener('click', () => {
+            // --- Sorting and Auto-sizing functionality ---
+            headerCell.addEventListener('click', () => {
                 if (isResizing) return;
 
                 if (clickTimer) {
@@ -65,37 +77,34 @@
                     autoSizeColumn(index);
                 } else {
                     clickTimer = setTimeout(() => {
-                        const sortDirection = header.getAttribute('data-sort-dir') === 'asc' ? 'desc' : 'asc';
+                        const sortDirection = headerCell.getAttribute('data-sort-dir') === 'asc' ? 'desc' : 'asc';
 
-                        headers.forEach(h => h.removeAttribute('data-sort-dir'));
+                        headerCells.forEach(h => h.removeAttribute('data-sort-dir'));
 
-                        header.setAttribute('data-sort-dir', sortDirection);
+                        headerCell.setAttribute('data-sort-dir', sortDirection);
 
-                        sortTable(index, sortDirection);
+                        sortGrid(index, sortDirection);
                         clickTimer = null;
                     }, 250);
                 }
             });
         });
 
-        function sortTable(colIndex, direction) {
-            const rows = Array.from(tbody.querySelectorAll('tr'));
+        function sortGrid(colIndex, direction) {
+            const rows = Array.from(bodyRows);
 
             rows.sort((rowA, rowB) => {
-                const cellA = rowA.cells[colIndex].textContent.trim();
-                const cellB = rowB.cells[colIndex].textContent.trim();
+                const cellA = rowA.children[colIndex].textContent.trim();
+                const cellB = rowB.children[colIndex].textContent.trim();
 
                 let comparison = 0;
-                if (cellA > cellB) {
-                    comparison = 1;
-                } else if (cellA < cellB) {
-                    comparison = -1;
-                }
+                if (cellA > cellB) comparison = 1;
+                else if (cellA < cellB) comparison = -1;
 
                 return direction === 'asc' ? comparison : comparison * -1;
             });
 
-            rows.forEach(row => tbody.appendChild(row));
+            rows.forEach(row => gridBody.appendChild(row));
         }
 
         function autoSizeColumn(colIndex) {
@@ -106,36 +115,38 @@
             document.body.appendChild(tempDiv);
 
             let maxWidth = 0;
-            const cells = table.querySelectorAll(`td:nth-child(${colIndex + 1}), th:nth-child(${colIndex + 1})`);
+            const cells = Array.from(grid.querySelectorAll(`.grid-cell:nth-child(${colIndex + 1})`));
 
             cells.forEach(cell => {
                 tempDiv.innerHTML = cell.innerHTML;
-                const cellWidth = tempDiv.offsetWidth;
-                if (cellWidth > maxWidth) {
-                    maxWidth = cellWidth;
+                if (tempDiv.offsetWidth > maxWidth) {
+                    maxWidth = tempDiv.offsetWidth;
                 }
             });
 
             document.body.removeChild(tempDiv);
 
-            const finalWidth = maxWidth + 30;
-            const maxAllowedWidth = tableContainer.offsetWidth / 2;
-            const newWidth = Math.min(finalWidth, maxAllowedWidth);
+            const newWidth = Math.min(maxWidth + 30, grid.offsetWidth / 2);
 
-            headers[colIndex].style.width = `${newWidth}px`;
+            headerCells[colIndex].style.width = `${newWidth}px`;
+            bodyRows.forEach(row => {
+                row.children[colIndex].style.width = `${newWidth}px`;
+            });
 
+            // Recalculate total grid width
             let totalWidth = 0;
-            headers.forEach(h => {
+            headerCells.forEach(h => {
                 totalWidth += h.offsetWidth;
             });
-            table.style.width = `${totalWidth}px`;
+            grid.style.width = `${totalWidth}px`;
         }
     }
 
-    window.initializeResizableTable = initializeTable;
+    window.initializeDataGrid = initializeDataGrid;
 
     document.addEventListener('DOMContentLoaded', () => {
-        const myTable = document.getElementById('myTable');
-        initializeResizableTable(myTable);
+        const myGrid = document.querySelector('.grid-container');
+        initializeDataGrid(myGrid);
     });
+
 })();
