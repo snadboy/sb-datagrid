@@ -13,8 +13,13 @@ body {
     overflow-x: auto;
 }
 
-.grid-row {
-    display: flex;
+.grid-header,
+.grid-body {
+    display: grid;
+    /* This defines the columns. 
+       1fr means each column gets an equal fraction of the available space. 
+       We will override this with JavaScript to set specific pixel widths. */
+    grid-template-columns: repeat(5, 1fr);
     border-bottom: 1px solid #ddd;
 }
 
@@ -24,8 +29,6 @@ body {
     text-align: left;
     overflow: hidden;
     word-wrap: break-word;
-    /* initial column width, will be overridden by JS */
-    min-width: 150px;
 }
 
 /* Header specific styles */

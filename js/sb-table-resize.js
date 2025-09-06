@@ -1,8 +1,4 @@
 (function () {
-    /**
-     * Initializes a div-based data grid with resizing, sorting, and auto-sizing.
-     * @param {HTMLElement} grid The grid container element to be enhanced.
-     */
     function initializeDataGrid(grid) {
         if (!grid || grid.getAttribute('data-initialized')) {
             console.error('Grid container not found or already initialized.');
@@ -12,6 +8,7 @@
 
         const headerCells = grid.querySelectorAll('.header-row .grid-cell');
         const bodyRows = grid.querySelectorAll('.grid-body .grid-row');
+        const gridHeader = grid.querySelector('.grid-header');
         const gridBody = grid.querySelector('.grid-body');
 
         let clickTimer = null;
@@ -26,13 +23,11 @@
 
                 let startX;
                 let startWidth;
-                let gridWidth;
 
                 resizer.addEventListener('mousedown', (e) => {
                     isResizing = true;
                     startX = e.clientX;
                     startWidth = headerCell.offsetWidth;
-                    gridWidth = grid.offsetWidth;
                     e.stopPropagation();
 
                     document.addEventListener('mousemove', onMouseMove);
@@ -46,16 +41,12 @@
                     const newCellWidth = startWidth + deltaX;
 
                     if (newCellWidth > 50) {
-                        headerCell.style.width = `${newCellWidth}px`;
+                        const currentColumns = Array.from(headerCells).map(h => `${h.offsetWidth}px`);
+                        currentColumns[index] = `${newCellWidth}px`;
 
-                        // Update the width of the corresponding cells in all body rows
-                        bodyRows.forEach(row => {
-                            row.children[index].style.width = `${newCellWidth}px`;
-                        });
-
-                        // Update total grid width
-                        const newGridWidth = gridWidth + deltaX;
-                        grid.style.width = `${newGridWidth}px`;
+                        const newGridTemplateColumns = currentColumns.join(' ');
+                        gridHeader.style.gridTemplateColumns = newGridTemplateColumns;
+                        gridBody.style.gridTemplateColumns = newGridTemplateColumns;
                     }
                 };
 
@@ -128,17 +119,12 @@
 
             const newWidth = Math.min(maxWidth + 30, grid.offsetWidth / 2);
 
-            headerCells[colIndex].style.width = `${newWidth}px`;
-            bodyRows.forEach(row => {
-                row.children[colIndex].style.width = `${newWidth}px`;
-            });
+            const currentColumns = Array.from(headerCells).map(h => `${h.offsetWidth}px`);
+            currentColumns[colIndex] = `${newWidth}px`;
 
-            // Recalculate total grid width
-            let totalWidth = 0;
-            headerCells.forEach(h => {
-                totalWidth += h.offsetWidth;
-            });
-            grid.style.width = `${totalWidth}px`;
+            const newGridTemplateColumns = currentColumns.join(' ');
+            gridHeader.style.gridTemplateColumns = newGridTemplateColumns;
+            gridBody.style.gridTemplateColumns = newGridTemplateColumns;
         }
     }
 
