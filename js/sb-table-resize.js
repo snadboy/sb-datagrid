@@ -1,5 +1,5 @@
 (function () {
-    let initCnt = 1;
+    let initCnt = 0;
 
     function initializeTable(table) {
         console.log('Initializing table, count: ', ++initCnt);
