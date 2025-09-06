@@ -1,0 +1,250 @@
+/* DataGrid CSS Library
+ * A reusable, customizable CSS Grid-based data grid with resizable columns
+ * Version: 1.0.0
+ */
+
+/* Container Styles */
+.datagrid-container {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    overflow-x: auto;
+    overflow-y: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    position: relative;
+}
+
+/* Grid wrapper for proper scrolling */
+.datagrid-wrapper {
+    display: inline-block;
+    min-width: 100%;
+}
+
+/* Grid Layout */
+.datagrid-header,
+.datagrid-body {
+    display: grid;
+    width: max-content;
+}
+
+/* Header Styles */
+.datagrid-header {
+    background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Cell Styles */
+.datagrid-cell {
+    padding: 8px 12px;
+    border-right: 1px solid #dee2e6;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.datagrid-cell:last-child {
+    border-right: none;
+}
+
+/* Header Cell Specific */
+.datagrid-header .datagrid-cell {
+    background: transparent;
+    user-select: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.datagrid-header .datagrid-cell:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Dragging States */
+.datagrid-header .datagrid-cell.dragging {
+    opacity: 0.5;
+    cursor: move;
+}
+
+.datagrid-header .datagrid-cell.drag-over {
+    border-left: 3px solid #007bff;
+}
+
+.datagrid-header .datagrid-cell.drag-over-right {
+    border-right: 3px solid #007bff;
+}
+
+.datagrid-container.dragging-column {
+    user-select: none;
+}
+
+.datagrid-container.dragging-column * {
+    user-select: none !important;
+}
+
+/* Prevent resizer from being draggable */
+.datagrid-resizer {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+}
+
+/* Drag Ghost */
+.datagrid-drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.8;
+    background: white;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Body Row Styles */
+.datagrid-body .datagrid-row {
+    display: contents;
+}
+
+.datagrid-body .datagrid-row:nth-child(even) .datagrid-cell {
+    background-color: #f8f9fa;
+}
+
+.datagrid-body .datagrid-row:hover .datagrid-cell {
+    background-color: #e9ecef;
+}
+
+.datagrid-body .datagrid-cell {
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Column Resizer */
+.datagrid-resizer {
+    position: absolute;
+    top: 0;
+    right: -3px;
+    width: 6px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 1;
+    background: transparent;
+    transition: background-color 0.2s;
+}
+
+.datagrid-resizer:hover,
+.datagrid-resizer.resizing {
+    background-color: #007bff;
+}
+
+/* Sorting Indicators */
+.datagrid-cell[data-sort-dir] {
+    padding-right: 24px;
+}
+
+.datagrid-cell[data-sort-dir]::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.datagrid-cell[data-sort-dir="asc"]::after {
+    border-width: 0 4px 6px 4px;
+    border-color: transparent transparent #495057 transparent;
+}
+
+.datagrid-cell[data-sort-dir="desc"]::after {
+    border-width: 6px 4px 0 4px;
+    border-color: #495057 transparent transparent transparent;
+}
+
+/* Selection Styles */
+.datagrid-body .datagrid-cell.selected {
+    background-color: #007bff !important;
+    color: white;
+}
+
+/* Loading State */
+.datagrid-container.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.datagrid-container.loading::after {
+    content: 'Loading...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    color: #6c757d;
+}
+
+/* Empty State */
+.datagrid-empty {
+    padding: 40px;
+    text-align: center;
+    color: #6c757d;
+    grid-column: 1 / -1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .datagrid-cell {
+        padding: 6px 8px;
+        font-size: 13px;
+    }
+}
+
+/* Theme Variations */
+.datagrid-container.dark {
+    background-color: #1a1a1a;
+    border-color: #333;
+    color: #e0e0e0;
+}
+
+.datagrid-container.dark .datagrid-header {
+    background: linear-gradient(to bottom, #2a2a2a, #1f1f1f);
+    border-bottom-color: #444;
+}
+
+.datagrid-container.dark .datagrid-cell {
+    border-color: #333;
+}
+
+.datagrid-container.dark .datagrid-header .datagrid-cell:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.datagrid-container.dark .datagrid-body .datagrid-row:nth-child(even) .datagrid-cell {
+    background-color: #1f1f1f;
+}
+
+.datagrid-container.dark .datagrid-body .datagrid-row:hover .datagrid-cell {
+    background-color: #2a2a2a;
+}
+
+/* Compact Theme */
+.datagrid-container.compact .datagrid-cell {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+/* Bordered Theme */
+.datagrid-container.bordered .datagrid-cell {
+    border: 1px solid #dee2e6;
+}
