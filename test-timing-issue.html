@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataGrid Timing Issue Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .test-section {
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .test-container {
+            height: 300px;
+            margin: 10px 0;
+            border: 2px solid #f0f0f0;
+        }
+        .hidden-container {
+            display: none;
+        }
+        .zero-height {
+            height: 0px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <h1>DataGrid Timing Issue Reproduction Tests</h1>
+    
+    <!-- Test 1: Normal case (should work) -->
+    <div class="test-section">
+        <h2>Test 1: Normal Case (Control)</h2>
+        <p>Grid initialized after CSS loads with visible container</p>
+        <div id="grid1" class="test-container"></div>
+        <button onclick="showWidths('grid1')">Check Column Widths</button>
+    </div>
+    
+    <!-- Test 2: CSS loaded dynamically AFTER grid init -->
+    <div class="test-section">
+        <h2>Test 2: CSS Loaded After Grid Init</h2>
+        <p>This often causes width sync issues</p>
+        <div id="grid2" class="test-container"></div>
+        <button onclick="showWidths('grid2')">Check Column Widths</button>
+        <button onclick="loadCSSLate()">Load CSS Late</button>
+    </div>
+    
+    <!-- Test 3: Grid initialized on hidden container -->
+    <div class="test-section">
+        <h2>Test 3: Hidden Container</h2>
+        <p>Grid initialized when container is hidden</p>
+        <div id="grid3" class="test-container hidden-container"></div>
+        <button onclick="showWidths('grid3')">Check Column Widths</button>
+        <button onclick="showContainer3()">Show Container</button>
+    </div>
+    
+    <!-- Test 4: Zero height container -->
+    <div class="test-section">
+        <h2>Test 4: Zero Height Container</h2>
+        <p>Grid initialized with zero-height container</p>
+        <div id="grid4" class="test-container zero-height"></div>
+        <button onclick="showWidths('grid4')">Check Column Widths</button>
+        <button onclick="restoreHeight4()">Restore Height</button>
+    </div>
+    
+    <!-- Test 5: Async data loading -->
+    <div class="test-section">
+        <h2>Test 5: Async Data Loading</h2>
+        <p>Grid initialized before data is available</p>
+        <div id="grid5" class="test-container"></div>
+        <button onclick="showWidths('grid5')">Check Column Widths</button>
+        <button onclick="loadDataLate()">Load Data</button>
+    </div>
+
+    <!-- Load CSS normally for tests 1, 3, 4, 5 -->
+    <link rel="stylesheet" href="https://snadboy.github.io/sb-datagrid/css/datagrid.css">
+    
+    <script src="https://snadboy.github.io/sb-datagrid/js/datagrid.js"></script>
+    <script>
+        const sampleData = [
+            { id: 1, name: 'John Smith Really Long Name', position: 'Senior Software Engineer', department: 'Engineering Technology', salary: '$95,000' },
+            { id: 2, name: 'Sarah Johnson', position: 'Product Manager Lead', department: 'Product Management', salary: '$110,000' },
+            { id: 3, name: 'Michael Chen', position: 'UX Designer', department: 'Design', salary: '$85,000' }
+        ];
+        
+        const columns = [
+            { field: 'id', header: 'ID', width: '60px' },
+            { field: 'name', header: 'Full Name' },
+            { field: 'position', header: 'Job Position' },
+            { field: 'department', header: 'Department' },
+            { field: 'salary', header: 'Annual Salary' }
+        ];
+        
+        let grids = {};
+        
+        function createGrid(containerId, data = sampleData) {
+            if (grids[containerId]) {
+                grids[containerId].destroy();
+            }
+            
+            grids[containerId] = new DataGrid(`#${containerId}`, {
+                columns: columns,
+                data: data,
+                resizable: true,
+                sortable: true
+            });
+            
+            return grids[containerId];
+        }
+        
+        function showWidths(containerId) {
+            const container = document.getElementById(containerId);
+            const headerCells = container.querySelectorAll('.datagrid-header .datagrid-cell');
+            const bodyCells = container.querySelectorAll('.datagrid-body .datagrid-cell');
+            
+            console.log(`=== ${containerId} Width Analysis ===`);
+            
+            headerCells.forEach((cell, index) => {
+                const headerWidth = cell.offsetWidth;
+                const bodyWidth = bodyCells[index] ? bodyCells[index].offsetWidth : 'N/A';
+                const isAligned = headerWidth === (bodyCells[index] ? bodyCells[index].offsetWidth : 0);
+                
+                console.log(`Column ${index}: Header=${headerWidth}px, Body=${bodyWidth}px, Aligned=${isAligned}`);
+                
+                if (!isAligned) {
+                    console.log(`❌ Column ${index} is misaligned!`);
+                }
+            });
+            
+            // Also show in alert for easier viewing
+            const results = Array.from(headerCells).map((cell, index) => {
+                const headerWidth = cell.offsetWidth;
+                const bodyWidth = bodyCells[index] ? bodyCells[index].offsetWidth : 'N/A';
+                return `Col ${index}: H=${headerWidth} B=${bodyWidth}`;
+            }).join('\\n');
+            
+            alert(`${containerId} Column Widths:\\n${results}`);
+        }
+        
+        // Test 1: Normal case
+        document.addEventListener('DOMContentLoaded', () => {
+            createGrid('grid1');
+        });
+        
+        // Test 2: CSS loaded after grid init
+        document.addEventListener('DOMContentLoaded', () => {
+            createGrid('grid2'); // This will likely have issues until CSS loads
+        });
+        
+        function loadCSSLate() {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://snadboy.github.io/sb-datagrid/css/datagrid.css';
+            document.head.appendChild(link);
+            
+            link.onload = () => {
+                alert('CSS loaded! Grid should now be styled properly, but widths may still be misaligned.');
+                // Force a recalculation
+                if (grids.grid2) {
+                    grids.grid2.refresh();
+                }
+            };
+        }
+        
+        // Test 3: Hidden container
+        document.addEventListener('DOMContentLoaded', () => {
+            createGrid('grid3'); // This will have issues because container is hidden
+        });
+        
+        function showContainer3() {
+            document.getElementById('grid3').classList.remove('hidden-container');
+            if (grids.grid3) {
+                grids.grid3.refresh();
+            }
+        }
+        
+        // Test 4: Zero height
+        document.addEventListener('DOMContentLoaded', () => {
+            createGrid('grid4'); // This will have issues because container has no height
+        });
+        
+        function restoreHeight4() {
+            document.getElementById('grid4').classList.remove('zero-height');
+            if (grids.grid4) {
+                grids.grid4.refresh();
+            }
+        }
+        
+        // Test 5: Empty data initially
+        document.addEventListener('DOMContentLoaded', () => {
+            createGrid('grid5', []); // Start with no data
+        });
+        
+        function loadDataLate() {
+            if (grids.grid5) {
+                grids.grid5.setData(sampleData);
+            }
+        }
+    </script>
+</body>
+</html>

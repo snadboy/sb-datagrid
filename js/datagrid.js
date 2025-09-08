@@ -85,10 +85,18 @@ class DataGrid {
         this.renderBody();
         this.updateGridColumns();
         
-        // Update wrapper width after rendering
+        // Update wrapper width after rendering with more robust timing
+        // Handle potential CSS conflicts by doing multiple passes
         setTimeout(() => {
+            this.updateGridColumns(); // Recalculate after CSS fully applied
             this.updateWrapperWidth();
         }, 0);
+        
+        // Additional pass to handle CSS conflicts from external stylesheets
+        setTimeout(() => {
+            this.updateGridColumns();
+            this.updateWrapperWidth();
+        }, 50);
     }
 
     renderHeader() {
