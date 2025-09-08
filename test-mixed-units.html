@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataGrid Mixed Units Test</title>
+    <link rel="stylesheet" href="css/datagrid.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .test-section {
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .test-container {
+            height: 300px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>DataGrid Mixed Units Test</h1>
+    
+    <!-- Test 1: Pure Pixel Units (Control) -->
+    <div class="test-section">
+        <h2>Test 1: Pure Pixel Units (Should Work)</h2>
+        <div id="pixel-grid" class="test-container"></div>
+        <button onclick="checkAlignment('pixel-grid')">Check Alignment</button>
+    </div>
+    
+    <!-- Test 2: Mixed px and fr Units -->
+    <div class="test-section">
+        <h2>Test 2: Mixed px and fr Units (Routes-like)</h2>
+        <div id="mixed-grid" class="test-container"></div>
+        <button onclick="checkAlignment('mixed-grid')">Check Alignment</button>
+    </div>
+    
+    <!-- Test 3: Pure Fractional Units -->
+    <div class="test-section">
+        <h2>Test 3: Pure Fractional Units</h2>
+        <div id="fractional-grid" class="test-container"></div>
+        <button onclick="checkAlignment('fractional-grid')">Check Alignment</button>
+    </div>
+    
+    <!-- Test 4: Percentage Units -->
+    <div class="test-section">
+        <h2>Test 4: Percentage Units</h2>
+        <div id="percent-grid" class="test-container"></div>
+        <button onclick="checkAlignment('percent-grid')">Check Alignment</button>
+    </div>
+
+    <script src="js/datagrid.js"></script>
+    <script>
+        const sampleData = [
+            { id: 1, name: 'John Smith Very Long Name', description: 'Senior Software Engineer Position', status: 'Active', priority: 'High' },
+            { id: 2, name: 'Sarah Johnson', description: 'Product Manager Lead Role', status: 'Pending', priority: 'Medium' },
+            { id: 3, name: 'Michael Chen', description: 'UX Designer Specialist', status: 'Inactive', priority: 'Low' }
+        ];
+        
+        let grids = {};
+        
+        function checkAlignment(gridId) {
+            const container = document.getElementById(gridId);
+            const headerCells = container.querySelectorAll('.datagrid-header .datagrid-cell');
+            const bodyCells = container.querySelectorAll('.datagrid-body .datagrid-cell');
+            
+            console.log(`=== ${gridId} Column Width Analysis ===`);
+            
+            let allAligned = true;
+            const results = [];
+            
+            headerCells.forEach((cell, index) => {
+                const headerWidth = cell.offsetWidth;
+                const bodyWidth = bodyCells[index] ? bodyCells[index].offsetWidth : 'N/A';
+                const isAligned = headerWidth === (bodyCells[index] ? bodyCells[index].offsetWidth : 0);
+                
+                if (!isAligned) {
+                    allAligned = false;
+                }
+                
+                const result = `Column ${index}: Header=${headerWidth}px, Body=${bodyWidth}px, Aligned=${isAligned}`;
+                console.log(result);
+                results.push(`Col ${index}: H=${headerWidth} B=${bodyWidth} ${isAligned ? '✅' : '❌'}`);
+            });
+            
+            const summary = allAligned ? '✅ ALL COLUMNS ALIGNED!' : '❌ MISALIGNMENT DETECTED';
+            console.log(summary);
+            
+            alert(`${gridId} Results:\n${results.join('\n')}\n\n${summary}`);
+        }
+        
+        // Test 1: Pure pixel units
+        grids.pixel = new DataGrid('#pixel-grid', {
+            columns: [
+                { field: 'id', header: 'ID', width: '60px' },
+                { field: 'name', header: 'Name', width: '200px' },
+                { field: 'description', header: 'Description', width: '300px' },
+                { field: 'status', header: 'Status', width: '100px' },
+                { field: 'priority', header: 'Priority', width: '120px' }
+            ],
+            data: sampleData,
+            theme: 'bordered'
+        });
+        
+        // Test 2: Mixed px and fr units (like routes page)
+        grids.mixed = new DataGrid('#mixed-grid', {
+            columns: [
+                { field: 'id', header: 'ID', width: '60px' },
+                { field: 'name', header: 'Name', width: '2fr' },
+                { field: 'description', header: 'Description', width: '1.5fr' },
+                { field: 'status', header: 'Status', width: '1fr' },
+                { field: 'priority', header: 'Priority', width: '120px' }
+            ],
+            data: sampleData,
+            theme: 'bordered'
+        });
+        
+        // Test 3: Pure fractional units
+        grids.fractional = new DataGrid('#fractional-grid', {
+            columns: [
+                { field: 'id', header: 'ID', width: '0.5fr' },
+                { field: 'name', header: 'Name', width: '2fr' },
+                { field: 'description', header: 'Description', width: '2fr' },
+                { field: 'status', header: 'Status', width: '1fr' },
+                { field: 'priority', header: 'Priority', width: '1fr' }
+            ],
+            data: sampleData,
+            theme: 'bordered'
+        });
+        
+        // Test 4: Percentage units
+        grids.percent = new DataGrid('#percent-grid', {
+            columns: [
+                { field: 'id', header: 'ID', width: '10%' },
+                { field: 'name', header: 'Name', width: '25%' },
+                { field: 'description', header: 'Description', width: '35%' },
+                { field: 'status', header: 'Status', width: '15%' },
+                { field: 'priority', header: 'Priority', width: '15%' }
+            ],
+            data: sampleData,
+            theme: 'bordered'
+        });
+        
+        // Auto-check all grids after a short delay
+        setTimeout(() => {
+            console.log('Auto-checking all grids after initialization...');
+            ['pixel-grid', 'mixed-grid', 'fractional-grid', 'percent-grid'].forEach(gridId => {
+                checkAlignment(gridId);
+            });
+        }, 1000);
+    </script>
+</body>
+</html>

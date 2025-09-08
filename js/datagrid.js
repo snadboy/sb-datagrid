@@ -239,19 +239,34 @@ class DataGrid {
     updateWrapperWidth() {
         if (!this.elements.wrapper || !this.elements.header) return;
         
-        // Calculate actual total width from rendered columns
-        const headerCells = this.elements.header.querySelectorAll('.datagrid-cell');
-        let totalWidth = 0;
+        // Detect column width unit types
+        const widthInfo = this.detectColumnWidthUnits();
         
-        headerCells.forEach(cell => {
-            totalWidth += cell.offsetWidth;
-        });
+        // If we have fractional units, let CSS Grid handle the layout naturally
+        // Don't force wrapper width as it conflicts with fr unit calculations
+        if (widthInfo.hasFractional || widthInfo.hasPercent || widthInfo.hasViewport) {
+            // For fractional/flexible layouts, remove forced width and let CSS Grid work
+            this.elements.wrapper.style.width = '';
+            this.elements.wrapper.style.minWidth = '100%';
+            return;
+        }
         
-        // Add a small buffer to ensure scrollbar appears for partial visibility
-        totalWidth += 2; // Account for borders
-        
-        // Set the width on wrapper to trigger scrollbar appropriately
-        this.elements.wrapper.style.width = `${totalWidth}px`;
+        // For pure pixel-based layouts, calculate exact width as before
+        if (widthInfo.allPixels) {
+            const headerCells = this.elements.header.querySelectorAll('.datagrid-cell');
+            let totalWidth = 0;
+            
+            headerCells.forEach(cell => {
+                totalWidth += cell.offsetWidth;
+            });
+            
+            // Add a small buffer to ensure scrollbar appears for partial visibility
+            totalWidth += 2; // Account for borders
+            
+            // Set the width on wrapper to trigger scrollbar appropriately
+            this.elements.wrapper.style.width = `${totalWidth}px`;
+            this.elements.wrapper.style.minWidth = '';
+        }
     }
 
     attachEventListeners() {
@@ -972,6 +987,38 @@ class DataGrid {
     
     isFiltered() {
         return this.state.isFiltered;
+    }
+    
+    // Utility function to detect column width unit types
+    detectColumnWidthUnits() {
+        const widthUnits = this.options.columns.map((col, index) => {
+            let width = col.width || '150px';
+            
+            // Check if column has been dynamically resized (always px)
+            if (this.state.columnWidths[index]) {
+                return 'px';
+            }
+            
+            // Detect unit type from width string
+            if (typeof width === 'string') {
+                if (width.includes('fr')) return 'fr';
+                if (width.includes('%')) return 'percent';
+                if (width.includes('px')) return 'px';
+                if (width.includes('em')) return 'em';
+                if (width.includes('rem')) return 'rem';
+                if (width.includes('vh') || width.includes('vw')) return 'viewport';
+            }
+            
+            return 'px'; // default
+        });
+        
+        return {
+            units: widthUnits,
+            hasFractional: widthUnits.includes('fr'),
+            hasViewport: widthUnits.includes('viewport'),
+            hasPercent: widthUnits.includes('percent'),
+            allPixels: widthUnits.every(unit => unit === 'px')
+        };
     }
     
     destroy() {
