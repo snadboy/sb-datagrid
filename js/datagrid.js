@@ -248,6 +248,8 @@ class DataGrid {
             // For fractional/flexible layouts, remove forced width and let CSS Grid work
             this.elements.wrapper.style.width = '';
             this.elements.wrapper.style.minWidth = '100%';
+            // Add class to indicate flexible layout for CSS
+            this.elements.wrapper.classList.add('datagrid-flexible-layout');
             return;
         }
         
@@ -266,6 +268,8 @@ class DataGrid {
             // Set the width on wrapper to trigger scrollbar appropriately
             this.elements.wrapper.style.width = `${totalWidth}px`;
             this.elements.wrapper.style.minWidth = '';
+            // Remove flexible layout class
+            this.elements.wrapper.classList.remove('datagrid-flexible-layout');
         }
     }
 

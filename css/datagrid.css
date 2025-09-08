@@ -22,11 +22,17 @@
     min-width: 100%;
 }
 
-/* Grid Layout */
+/* Grid Layout - Default for pixel-based layouts */
 .datagrid-header,
 .datagrid-body {
     display: grid;
     width: max-content;
+}
+
+/* For flexible layouts with fr/% units, use full width to ensure proper alignment */
+.datagrid-flexible-layout .datagrid-header,
+.datagrid-flexible-layout .datagrid-body {
+    width: 100%;
 }
 
 /* Header Styles */
